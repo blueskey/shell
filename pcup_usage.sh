@@ -1,0 +1,34 @@
+#!/bin/sh
+
+#计算1小时内进程的CPU占用情况
+
+SECS=3600
+UNIT_TIME=60
+
+#SEC:需要进行监视的总秒数
+#UNIT_TIME:取样的时间间隔，单位秒
+
+STEPS=$(( $SECS /$UNIT_TIME))
+
+echo Watching CPU usage...;
+
+for ((i=0;i<STEPS;i++))
+do
+    ps -eo comm,pcpu |tail -n +2 >> /tmp/cpu_usage.$$
+    sleep $UNIT_TIME
+done
+
+echo
+echo CPU eaters:
+
+cat /tmp/cpu_usage.$$ | 
+awk '
+{ process[$1]+=$2; }
+END{
+for(i in process)
+    {
+        printf("%-10s %s",i,process[i];
+    }
+}' |sort -nrk 2 | head 
+rm /tmp/cpu_usage.$$
+

@@ -1,0 +1,15 @@
+
+file_date=$(date "+%Y-%m-%d")
+
+file_time=$(date "+%Y-%m-%d %H:%M:%S")
+
+file_name=$file_date-$1.md
+
+if [ -f $file_name ] ; then
+    echo -e $'\e[1;35m sorry , your file has exisited !\n \e[0m'
+    exit 0;
+fi
+
+touch $file_name
+
+echo -e '---\nlayout: '$2'\ntitle: "'$3'"\ndate: '$file_time '\ncategories: '$4'\n---' >$file_name
